@@ -31,18 +31,12 @@ private:
     CardSuit _suit;   // 花色
 };
 
-bool lessSort(const Card& c1, const Card& c2) { // 比较(点数+花色)
-    if(c1.point() == c2.point()) {
-        return c1.suit() < c2.suit();
-    }
-    else {
-        return c1.point() < c2.point();
-    }
-}
+// 比较(点数+花色)
+bool lessSort(const Card& c1, const Card& c2);    // 判断c1是否小于c2
+bool greaterSort(const Card& c1, const Card& c2); // 判断c1是否大于c2
 
-bool greaterSort(const Card& c1, const Card& c2) {
-
-}
+bool operator==(const Card& left, const Card& right); // 判断c1是否等于c2
+uint qHash(const Card& card); // 重写全局函数qHash: 让每张扑克牌转化成不同的数即可
 
 using CardList = QVector<Card>; // 给该类型起别名
 

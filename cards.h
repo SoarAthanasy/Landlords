@@ -33,7 +33,7 @@ public:
     Card takeRandomCard(); // 随机取出一张扑克牌
 
     enum SortType { Asc, Desc, NoSort };
-    CardList toCardList(SortType type); // 无序QSet -> 有序的QVector, 可指定(升序/降序)
+    CardList toCardList(SortType type = Desc); // 无序QSet -> 有序的QVector, 可指定(升序/降序), 默认降序
 private:
     QSet<Card> _cards;
 };

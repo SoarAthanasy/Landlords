@@ -89,10 +89,12 @@ CardList Cards::toCardList(SortType type) {
     }
     if(type == Asc) { // 排升序
         // ∵lessSort是对两个Card对象进行比较, ∴建议写到Card.h中
-        std::sort(list.begin(), list.end(), lessSort)
+        std::sort(list.begin(), list.end(), lessSort);
     }
     else if(type == Desc) { // 排降序
+        std::sort(list.begin(), list.end(), greaterSort);
     }
+    return list;
 }
 
 
