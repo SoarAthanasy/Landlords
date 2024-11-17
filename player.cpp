@@ -1,12 +1,7 @@
 #include "player.h"
 
-Player::Player(QObject* parent): QObject{parent} {
-
-}
-
-Player::Player(QString name, QObject* parent) {
-    _name = name;
-}
+Player::Player(QObject* parent): QObject{parent} { }
+Player::Player(QString name, QObject* parent) { _name = name; }
 
 void Player::setName(QString name) { _name = name; }
 QString Player::getName() const { return _name; }
@@ -34,9 +29,7 @@ void Player::setNextPlayer(Player* player) { _next = player; }
 Player *Player::getPrevPlayer() const { return _prev; }
 Player *Player::getNextPlayer() const { return _next; }
 
-void Player::grabLordBet(int point) {
-
-}
+void Player::grabLordBet(int point) { }
 
 void Player::storeDispatchCard(Card& card) { _cards.add(card); }
 void Player::storeDispatchCard(Cards& cards) { _cards.add(cards); }
@@ -45,3 +38,13 @@ Cards Player::getCards() { return _cards; }
 void Player::clearCards() { _cards.clear(); }
 
 void Player::playHand(Cards& cards) { _cards.remove(cards); }
+
+void Player::setPendingInfo(Player *player, Cards &cards) {
+    _pendPlayer = player;
+    _pendCards = cards;
+}
+Player *Player::getPendPlayer() { return _pendPlayer; }
+Cards Player::getPendCards() { return _pendCards; }
+
+void Player::prepareCallLord() { }
+void Player::preparePlayHand() { }
