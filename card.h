@@ -21,7 +21,10 @@ public:
         Card_BJ, // 大王
         Card_End
     };
+
     Card();
+    Card(CardPoint point, CardSuit suit);
+
     void setPoint(CardPoint point); // 设置点数
     void setSuit(CardSuit suit);    // 设置花色
     CardPoint point() const;        // 获取点数

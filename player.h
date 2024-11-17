@@ -24,8 +24,8 @@ public:
     void setSex(Sex sex);
     Sex getSex() const;
     // 头像的显示方向
-    void setdirection(Direction direction);
-    Direction getdirection() const;
+    void setDirection(Direction direction);
+    Direction getDirection() const;
     // 玩家的类型
     void setType(Type type);
     Type getType() const;
@@ -44,7 +44,7 @@ public:
     void grabLordBet(int point);
     // 存储发来的扑克牌(发牌的时候得到的)。dispatch-发送
     void storeDispatchCard(Card& card);
-    void storeDispatchCard(Cards& cards); // 地主会得到最后的3张牌
+    void storeDispatchCards(Cards& cards); // 地主会得到最后的3张牌
 
     Cards getCards();  // 得到玩家手中所有的牌(用于显示)
     void clearCards(); // 清空玩家手中所有的牌(游戏结束时调用)

@@ -12,8 +12,8 @@ Player::Role Player::getRole() const { return _role; }
 void Player::setSex(Sex sex) { _sex = sex; }
 Player::Sex Player::getSex() const { return _sex; }
 
-void Player::setdirection(Direction direction) { _direction = direction; }
-Player::Direction Player::getdirection() const { return _direction; }
+void Player::setDirection(Direction direction) { _direction = direction; }
+Player::Direction Player::getDirection() const { return _direction; }
 
 void Player::setType(Type type) { _type = type; }
 Player::Type Player::getType() const { return _type; }
@@ -32,7 +32,7 @@ Player *Player::getNextPlayer() const { return _next; }
 void Player::grabLordBet(int point) { }
 
 void Player::storeDispatchCard(Card& card) { _cards.add(card); }
-void Player::storeDispatchCard(Cards& cards) { _cards.add(cards); }
+void Player::storeDispatchCards(Cards& cards) { _cards.add(cards); }
 
 Cards Player::getCards() { return _cards; }
 void Player::clearCards() { _cards.clear(); }
