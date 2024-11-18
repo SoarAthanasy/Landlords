@@ -8,3 +8,9 @@ ScorePanel::ScorePanel(QWidget *parent)
 }
 
 ScorePanel::~ScorePanel() { delete ui; }
+
+void ScorePanel::setScores(int left, int right, int user) {
+    ui->leftScore->setText(QString::number(left));
+    ui->rightScore->setText(QString::number(right));
+    ui->myScore->setText(QString::number(user));
+}

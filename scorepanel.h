@@ -10,6 +10,8 @@ class ScorePanel : public QWidget { // 游戏分数面板窗口
 public:
     explicit ScorePanel(QWidget *parent = nullptr);
     ~ScorePanel();
+
+    void setScores(int left, int right, int user); // 设置玩家的得分
 private:
     Ui::ScorePanel *ui;
 };
