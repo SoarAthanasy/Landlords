@@ -38,3 +38,7 @@ bool operator==(const Card& left, const Card& right) {
 uint qHash(const Card& card) {
     return card.point() * 100 + card.suit();
 }
+
+bool operator<(const Card& left, const Card& right) {
+    return (left.point() < right.point() || left.suit() < right.suit());
+}

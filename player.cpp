@@ -1,7 +1,11 @@
 #include "player.h"
 
-Player::Player(QObject* parent): QObject{parent} { }
-Player::Player(QString name, QObject* parent) { _name = name; }
+Player::Player(QObject* parent): QObject{parent} {
+    _score = 0;   _isWin = false;
+}
+Player::Player(QString name, QObject* parent) : Player(parent) { // Player(parent)是使用了委托构造函数
+    _name = name;
+}
 
 void Player::setName(QString name) { _name = name; }
 QString Player::getName() const { return _name; }

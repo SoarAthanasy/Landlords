@@ -43,4 +43,6 @@ uint qHash(const Card& card); // 重写全局函数qHash: 让每张扑克牌转�
 
 using CardList = QVector<Card>; // 给该类型起别名
 
+bool operator<(const Card& left, const Card& right); // 判断c1是否等于c2
+
 #endif // CARD_H
