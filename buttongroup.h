@@ -15,7 +15,7 @@ public:
     ~ButtonGroup();
 
     void initButtons(); // 初始化按钮组
-    void selectPage(Panel type);  // 处理page页的切换
+    void selectPage(Panel type, int bet = 0);  // 处理page页的切换
 signals:
     void startGame();       // 开始游戏
     void playHand();        // 出牌

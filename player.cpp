@@ -33,7 +33,9 @@ void Player::setNextPlayer(Player* player) { _next = player; }
 Player *Player::getPrevPlayer() const { return _prev; }
 Player *Player::getNextPlayer() const { return _next; }
 
-void Player::grabLordBet(int point) { }
+void Player::grabLordBet(int bet) {
+    emit notifyGrabLordBet(this, bet);
+}
 
 void Player::storeDispatchCard(Card& card) { _cards.add(card); }
 void Player::storeDispatchCards(Cards& cards) { _cards.add(cards); }

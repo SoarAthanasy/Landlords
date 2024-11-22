@@ -1,9 +1,7 @@
 #include "buttongroup.h"
 #include "ui_buttongroup.h"
 
-ButtonGroup::ButtonGroup(QWidget *parent)
-    : QWidget(parent), ui(new Ui::ButtonGroup)
-{
+ButtonGroup::ButtonGroup(QWidget *parent): QWidget(parent), ui(new Ui::ButtonGroup) {
     ui->setupUi(this);
 }
 
@@ -48,6 +46,22 @@ void ButtonGroup::initButtons() {
     });
 }
 
-void ButtonGroup::selectPage(Panel type) {
+void ButtonGroup::selectPage(Panel type, int bet) {
     ui->stackedWidget->setCurrentIndex(type);
+    if(type != CallLord) { return; }
+    if(bet == 0) {
+        ui->oneScore->setVisible(true);
+        ui->twoScore->setVisible(true);
+        ui->threeScore->setVisible(true);
+    }
+    else if(bet == 1) {
+        ui->oneScore->setVisible(false);
+        ui->twoScore->setVisible(true);
+        ui->threeScore->setVisible(true);
+    }
+    else if(bet == 3) {
+        ui->oneScore->setVisible(false);
+        ui->twoScore->setVisible(false);
+        ui->threeScore->setVisible(true);
+    }
 }

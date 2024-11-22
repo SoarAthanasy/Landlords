@@ -14,6 +14,7 @@ public:
 
     explicit Player(QObject *parent = nullptr);
     explicit Player(QString name, QObject *parent = nullptr);
+    // 属性---------------------------------------------------
     // 名字
     void setName(QString name);
     QString getName() const;
@@ -35,30 +36,34 @@ public:
     // 游戏结果
     void setWin(bool flag);
     bool isWin() const;
+
+    // 环境------------------------------------------------------
     // 提供当前玩家的(上家/下家)
     void setPrevPlayer(Player* player);
     void setNextPlayer(Player* player);
     Player* getPrevPlayer() const;
     Player* getNextPlayer() const;
-    // 叫地主/抢地主。grab-抓取、bet-下注
-    void grabLordBet(int point);
-    // 存储发来的扑克牌(发牌的时候得到的)。dispatch-发送
-    void storeDispatchCard(Card& card);
-    void storeDispatchCards(Cards& cards); // 地主会得到最后的3张牌
-
-    Cards getCards();  // 得到玩家手中所有的牌(用于显示)
-    void clearCards(); // 清空玩家手中所有的牌(游戏结束时调用)
-
-    void playHand(Cards& cards); // 出牌
-
     // 待处理的牌及其所属玩家
     void setPendingInfo(Player* player, Cards& cards);
     Player* getPendPlayer();
     Cards getPendCards();
 
-    virtual void prepareCallLord();
-    virtual void preparePlayHand();
+    // 手牌-------------------------------------------------------
+    // 存储发来的扑克牌(发牌的时候得到的)。dispatch-发送
+    void storeDispatchCard(Card& card);
+    void storeDispatchCards(Cards& cards); // 地主会得到最后的3张牌
+    Cards getCards();            // 得到玩家手中所有的牌(用于显示)
+    void clearCards();           // 清空玩家手中所有的牌(游戏结束时调用)
+    void playHand(Cards& cards); // 出牌
+
+    // 叫地主/抢地主。grab-抓取、bet-下注----------------------------
+    void grabLordBet(int bet);
+
+    // 虚函数-----------------------------------------------------
+    virtual void prepareCallLord(); // 准备叫地主
+    virtual void preparePlayHand(); // 准备出牌
 signals:
+    void notifyGrabLordBet(Player* player, int bet); // 通知GameControl: 已经下注抢地主
 protected:
     int _score;    // 玩家的分数
     QString _name; // 玩家的姓名
