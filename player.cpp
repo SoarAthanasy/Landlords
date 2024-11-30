@@ -54,3 +54,13 @@ Cards Player::getPendCards() { return _pendCards; }
 
 void Player::prepareCallLord() { }
 void Player::preparePlayHand() { }
+
+void Player::thinkCallLord()
+{
+
+}
+
+void Player::thinkPlayHand()
+{
+
+}

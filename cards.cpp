@@ -13,6 +13,12 @@ void Cards::add(const Cards& cards) {
     _cards.unite(cards._cards); // 取并集
 }
 
+void Cards::add(const QVector<Cards> &cardsArray) {
+    for(int i = 0; i < cardsArray.size(); ++i) {
+        add(cardsArray[i]);
+    }
+}
+
 Cards& Cards::operator<<(const Card& card) {
     add(card);
     return *this;
@@ -22,11 +28,17 @@ Cards& Cards::operator<<(const Cards& cards) {
     return *this;
 }
 
-void Cards::remove(Card& card) {
+void Cards::remove(const Card& card) {
     _cards.remove(card);
 }
-void Cards::remove(Cards& cards) {
+void Cards::remove(const Cards& cards) {
     _cards.subtract(cards._cards);
+}
+
+void Cards::remove(const QVector<Cards> &cardsArray) {
+    for(int i = 0; i < cardsArray.size(); ++i) {
+        remove(cardsArray[i]);
+    }
 }
 
 int Cards::cardCount() { return _cards.count(); }

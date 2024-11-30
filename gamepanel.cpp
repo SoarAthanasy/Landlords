@@ -25,6 +25,8 @@ GamePanel::GamePanel(QWidget *parent): QMainWindow(parent), ui(new Ui::GamePanel
 
     _timer = new QTimer(this); // 实例化定时器
     connect(_timer, &QTimer::timeout, this, &GamePanel::onDispatchCard);
+
+    _animation = new AnimationWindow(this);
 }
 
 GamePanel::~GamePanel() { delete ui; }
@@ -206,10 +208,15 @@ void GamePanel::gameStatusPrecess(GameControl::GameStatus status) { // 处理游
 void GamePanel::onPlayerStatucChanged(Player *player, GameControl::PlayerStatus status) {
     switch (status) {
     case GameControl::ThinkingForCallLord:
+    {
         if(player == _gameControl->getUser()) {
             ui->btnGroup->selectPage(ButtonGroup::CallLord, _gameControl->getPlayerMaxBet());
         }
+        else {
+            ui->btnGroup->selectPage(ButtonGroup::Empty);
+        }
         break;
+    }
     case GameControl::ThinkingForPlayHand:
         break;
     case GameControl::Winning:

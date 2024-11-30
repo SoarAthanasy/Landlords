@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    animationwindow.cpp \
     buttongroup.cpp \
     card.cpp \
     cardpanel.cpp \
@@ -20,10 +21,13 @@ SOURCES += \
     player.cpp \
     playhand.cpp \
     robot.cpp \
+    robotgraplord.cpp \
     scorepanel.cpp \
+    strategy.cpp \
     user.cpp
 
 HEADERS += \
+    animationwindow.h \
     buttongroup.h \
     card.h \
     cardpanel.h \
@@ -34,7 +38,9 @@ HEADERS += \
     player.h \
     playhand.h \
     robot.h \
+    robotgraplord.h \
     scorepanel.h \
+    strategy.h \
     user.h
 
 FORMS += \

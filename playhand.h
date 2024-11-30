@@ -40,23 +40,27 @@ public:
     PlayHand(Cards& cards);
     PlayHand(HandType type, Card::CardPoint point, int extra);
 
-    // 对cards中的牌进行分类: (1张/2张/3张/4张)相同点数的有几种
-    void classify(Cards& cards);
-    void judgeCardType(); // 对牌型进行分类
-
     // 得到组合牌的属性信息
     HandType getHandType();
     Card::CardPoint getCardPoint();
     int getExtra();
 
+    // 比较当前组合牌和其他组合牌的大小
+    bool canBeat(const PlayHand& other);
+private: // 私有成员函数
+    // 对cards中的牌进行分类: (1张/2张/3张/4张)相同点数的有几种
+    void classify(Cards& cards);
+    void judgeCardType(); // 对牌型进行分类
+
     // 判断牌的类型
+    bool isPass();                // 过
     bool isSingle();              // 单
     bool isPair();                // 对
     bool isTriple();              // 三个相同
     bool isTripleSingle();        // 三带一
     bool isTriplePair();          // 三带二
     bool isPlane();               // 飞机
-    bool isPlaneTwoSingle();      //飞机带两单
+    bool isPlaneTwoSingle();      // 飞机带两单
     bool isPlaneTwoPair();        // 飞机带两对
     bool isSeqPair();             // 连对
     bool isSeqSingle();           // 顺子
@@ -68,10 +72,10 @@ public:
     bool isBombJokersSingle();    // 王炸带一单
     bool isBombJokersPair();      // 王炸带一对
     bool isBombJokersTwoSingle(); // 王炸带两单
-private:
+private: // 成员变量
     HandType _type;         // 所出牌的类型
     Card::CardPoint _point; // 所出牌的点数
-    int _extra;             // 所出牌的相关信息
+    int _extra;             // 所出牌的相关信息: 连对有多少对, 顺子有多少张牌
     QVector<Card::CardPoint> _oneCard;   // 存储: 所出牌中含有的单张牌的点数
     QVector<Card::CardPoint> _twoCard;   // 存储: 所出牌中含有的[点数相同的2张牌]的点数
     QVector<Card::CardPoint> _threeCard; // 存储: 所出牌中含有的[点数相同的3张牌]的点数

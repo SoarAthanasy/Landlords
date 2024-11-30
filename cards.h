@@ -13,12 +13,14 @@ public:
     // 添加扑克牌
     void add(const Card& card);   // 添加1张
     void add(const Cards& cards); // 添加多张
+    void add(const QVector<Cards>& cardsArray);
     // 一次性插入多个数据
     Cards& operator<<(const Card& card);
     Cards& operator<<(const Cards& cards);
     // 删除扑克牌
-    void remove(Card& card);   // 删除1张
-    void remove(Cards& cards); // 删除多张
+    void remove(const Card& card);   // 删除1张
+    void remove(const Cards& cards); // 删除多张
+    void remove(const QVector<Cards>& cardsArray); // 删除多个组合牌
 
     int cardCount(); // 扑克牌的数量
     bool isEmpty();  // 判断是否为空

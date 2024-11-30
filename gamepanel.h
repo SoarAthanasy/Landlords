@@ -8,6 +8,7 @@
 #include "cardpanel.h"
 #include <QLabel>
 #include <QTimer>
+#include "animationwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class GamePanel; }
@@ -41,6 +42,8 @@ public:
 
     // 抢地主阶段------------------------------------------------------------
     void onGrabLordBet(Player* player, int bet, bool flag);
+    // 其他-----------------------------------------------------------------
+    void showAnimation(); // 显示特效动画
 protected:
     void paintEvent(QPaintEvent* pe);
 private:
@@ -69,5 +72,6 @@ private:
     QPoint _baseCardPos;  // 发牌区扑克牌的位置
     GameControl::GameStatus _gameStatus; // 游戏的状态: 发牌、抢地主、出牌
     QTimer* _timer; // 定时器
+    AnimationWindow* _animation; // 特效动画窗口: 1分/2分/炸弹/王炸/飞机/...
 };
 #endif // GAMEPANEL_H

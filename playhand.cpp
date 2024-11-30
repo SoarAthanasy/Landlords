@@ -43,12 +43,114 @@ void PlayHand::classify(Cards &cards) {
 }
 
 void PlayHand::judgeCardType() {
-
+    _type = Hand_Unknow;
+    _point = Card::Card_Begin;
+    _extra = 0;
+    if(isPass()) {
+        _type = Hand_Pass;
+    }
+    else if(isSingle()) {
+        _type = Hand_Single;
+        _point = _oneCard.first();
+    }
+    else if(isPair()) {
+        _type = Hand_Pair;
+        _point = _twoCard.first();
+    }
+    else if(isTriple()) {
+        _type = Hand_Triple;
+        _point = _threeCard.first();
+    }
+    else if(isTripleSingle()) {
+        _type = Hand_Triple_Single;
+        _point = _threeCard.first();
+    }
+    else if(isTriplePair()) {
+        _type = Hand_Triple_Pair;
+        _point = _threeCard.first();
+    }
+    else if(isPlane()) {
+        _type = Hand_Plane;
+        _point = _threeCard.first(); // 记录点数小的那张牌
+    }
+    else if(isPlaneTwoSingle()) {
+        _type = Hand_Plane_Two_Single;
+        _point = _threeCard.first(); // 记录点数小的那张牌
+    }
+    else if(isPlaneTwoPair()) {
+        _type = Hand_Plane_Two_Pair;
+        _point = _threeCard.first(); // 记录点数小的那张牌
+    }
+    else if(isSeqPair()) {
+        _type = Hand_Seq_Pair;
+        _point = _twoCard.first(); // 记录点数小的那张牌
+        _extra = _twoCard.size();
+    }
+    else if(isSeqSingle()) {
+        _type = Hand_Seq_Single;
+        _point = _oneCard.first(); // 记录点数小的那张牌
+        _extra = _oneCard.size();
+    }
+    else if(isBomb()) {
+        _type = Hand_Bomb;
+        _point = _fourCard.first(); // 记录点数小的那张牌
+    }
+    else if(isBombSingle()) {
+        _type = Hand_Bomb_Single;
+        _point = _fourCard.first(); // 记录点数小的那张牌
+    }
+    else if(isBombPair()) {
+        _type = Hand_Bomb_Pair;
+        _point = _fourCard.first(); // 记录点数小的那张牌
+    }
+    else if(isBombTwoSingle()) {
+        _type = Hand_Bomb_Two_Single;
+        _point = _fourCard.first(); // 记录点数小的那张牌
+    }
+    else if(isBombJokers()) {
+        _type = Hand_Bomb_Jokers; // 王炸无需记录点数
+    }
+    else if(isBombJokersSingle()) {
+        _type = Hand_Bomb_Jokers_Single;
+    }
+    else if(isBombJokersPair()) {
+        _type = Hand_Bomb_Jokers_Pair;
+    }
+    else if(isBombJokersTwoSingle()) {
+        _type = Hand_Bomb_Jokers_Two_Single;
+    }
 }
 
 PlayHand::HandType PlayHand::getHandType() { return _type; }
 Card::CardPoint PlayHand::getCardPoint() { return _point; }
 int PlayHand::getExtra() { return _extra; }
+
+bool PlayHand::canBeat(const PlayHand& other) {
+    if(_type == Hand_Unknow) { return false; }     // 当前组合牌的牌型未知
+    if(other._type == Hand_Pass) { return true; }  // 对方放弃出牌
+    if(_type == Hand_Bomb_Jokers) { return true; } // 王炸 > 其余任何牌型
+    if(_type == Hand_Bomb && other._type >= Hand_Single && other._type <= Hand_Seq_Single) {
+        // 炸弹 > (单/对子/三/三带一/飞机类/顺子/连对)
+        return true;
+    }
+    if(_type == other._type) { // 双方牌型一致
+        if(_type == Hand_Seq_Pair || _type == Hand_Seq_Single) {
+            return _point > other._point && _extra == other._extra;
+        }
+        else {
+            return _point > other._point;
+        }
+    }
+    return false;
+}
+
+bool PlayHand::isPass() {
+    if(_oneCard.isEmpty() && _twoCard.isEmpty() && _threeCard.isEmpty() && _fourCard.isEmpty()) {
+        return true;
+    }
+    return false;
+}
+
 
 bool PlayHand::isSingle() {
     if(_oneCard.size() == 1 && _twoCard.isEmpty() && _threeCard.isEmpty() && _fourCard.isEmpty()) {
@@ -140,13 +242,72 @@ bool PlayHand::isSeqSingle() {
 }
 
 bool PlayHand::isBomb() {
-    if(_oneCard.isEmpty() && _twoCard.isEmpty() && _threeCard.size() == 2 && _fourCard.isEmpty()) {
-        std::sort(_threeCard.begin(), _threeCard.end()); // 递增序列
-        if(_threeCard[1] - _threeCard[0] == 1 && _threeCard[1] < Card::Card_2) {
+    if(_oneCard.isEmpty() && _twoCard.isEmpty() && _threeCard.isEmpty() && _fourCard.size() == 1) {
+        return true;
+    }
+    return false;
+}
+
+bool PlayHand::isBombSingle() {
+    if(_oneCard.size() == 1 && _twoCard.isEmpty() && _threeCard.isEmpty() && _fourCard.size() == 1) {
+        return true;
+    }
+    return false;
+}
+
+bool PlayHand::isBombPair() {
+    if(_oneCard.isEmpty() && _twoCard.size() == 1 && _threeCard.isEmpty() && _fourCard.size() == 1) {
+        return true;
+    }
+    return false;
+}
+
+bool PlayHand::isBombTwoSingle() {
+    if(_oneCard.size() == 2 && _twoCard.isEmpty() && _threeCard.isEmpty() && _fourCard.size() == 1) {
+        std::sort(_oneCard.begin(), _oneCard.end());
+        if(_oneCard.first() != Card::Card_SJ && _oneCard.last() != Card::Card_BJ) {
             return true;
         }
     }
     return false;
 }
 
+bool PlayHand::isBombJokers() {
+    if(_oneCard.size() == 2 && _twoCard.isEmpty() && _threeCard.isEmpty() && _fourCard.isEmpty()) {
+        std::sort(_oneCard.begin(), _oneCard.end());
+        if(_oneCard.first() == Card::Card_SJ && _oneCard.last() == Card::Card_BJ) {
+            return true;
+        }
+    }
+    return false;
+}
 
+bool PlayHand::isBombJokersSingle() {
+    if(_oneCard.size() == 3 && _twoCard.isEmpty() && _threeCard.isEmpty() && _fourCard.isEmpty()) {
+        std::sort(_oneCard.begin(), _oneCard.end());
+        if(_oneCard[1] == Card::Card_SJ && _oneCard[2] == Card::Card_BJ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool PlayHand::isBombJokersPair() {
+    if(_oneCard.size() == 2 && _twoCard.size() == 1 && _threeCard.isEmpty() && _fourCard.isEmpty()) {
+        std::sort(_oneCard.begin(), _oneCard.end());
+        if(_oneCard.first() == Card::Card_SJ && _oneCard.last() == Card::Card_BJ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool PlayHand::isBombJokersTwoSingle() {
+    if(_oneCard.size() == 4 && _twoCard.isEmpty() && _threeCard.isEmpty() && _fourCard.isEmpty()) {
+        std::sort(_oneCard.begin(), _oneCard.end());
+        if(_oneCard[2] == Card::Card_SJ && _oneCard[3] == Card::Card_BJ) {
+            return true;
+        }
+    }
+    return false;
+}

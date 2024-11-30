@@ -62,6 +62,8 @@ public:
     // 虚函数-----------------------------------------------------
     virtual void prepareCallLord(); // 准备叫地主
     virtual void preparePlayHand(); // 准备出牌
+    virtual void thinkCallLord();   // 思考叫地主
+    virtual void thinkPlayHand();   // 思考出牌
 signals:
     void notifyGrabLordBet(Player* player, int bet); // 通知GameControl: 已经下注抢地主
 protected:
