@@ -25,11 +25,14 @@ public:
 
     void setOwner(Player* player); // 设置卡牌的所有者
     Player* getOwner();            // 获取卡牌的所有者
+
+    void clicked(); // 模拟扑克牌的鼠标点击事件
 protected:
     // 通过setImage()只能将图片传入, 但要显示图片还需paintEvent事件处理函数
     void paintEvent(QPaintEvent* event);
-    void mousePressEvent(QMouseEvent* event);
+    void mousePressEvent(QMouseEvent* event);  // 点击卡片窗口: 发送cardSelected()信号
 signals:
+    void cardSelected(Qt::MouseButton button); // 通知主窗口, 当前卡牌窗口被选中了
 private:
     QPixmap _front;   // 正面的图片
     QPixmap _back;    // 背面的图片

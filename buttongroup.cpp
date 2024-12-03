@@ -32,6 +32,7 @@ void ButtonGroup::initButtons() {
     connect(ui->play, &MyButton::clicked, this, &ButtonGroup::playHand);
     connect(ui->playCard, &MyButton::clicked, this, &ButtonGroup::playHand);
     connect(ui->Pass, &MyButton::clicked, this, &ButtonGroup::pass);
+
     connect(ui->giveup, &MyButton::clicked, this, [=](){
         emit betPoint(0);
     });

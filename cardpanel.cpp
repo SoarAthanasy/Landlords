@@ -1,4 +1,5 @@
 #include "cardpanel.h"
+#include <QMouseEvent>
 
 CardPanel::CardPanel(QWidget *parent): QWidget{parent} {
     _isFront = true;
@@ -24,6 +25,10 @@ Card CardPanel::getCard() { return _card; }
 void CardPanel::setOwner(Player *player) { _owner = player; }
 Player *CardPanel::getOwner() { return _owner; }
 
+void CardPanel::clicked() {
+    emit cardSelected(Qt::LeftButton);
+}
+
 void CardPanel::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
     QPainter p(this); // 画图需要使用画图类, 并需要指定绘画设备类
@@ -32,5 +37,5 @@ void CardPanel::paintEvent(QPaintEvent *event) {
 }
 
 void CardPanel::mousePressEvent(QMouseEvent *event) {
-    Q_UNUSED(event);
+    emit cardSelected(event->button());
 }

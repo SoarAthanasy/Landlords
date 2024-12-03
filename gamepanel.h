@@ -17,6 +17,9 @@ QT_END_NAMESPACE
 class GamePanel : public QMainWindow {
     Q_OBJECT
 public:
+    enum AnimationType { ShunZi, LianDui, Plane, JokerBomb, Bomb, Bet };
+
+    // 构造-----------------------------------------------------------------
     GamePanel(QWidget *parent = nullptr);
     ~GamePanel();
 
@@ -42,10 +45,20 @@ public:
 
     // 抢地主阶段------------------------------------------------------------
     void onGrabLordBet(Player* player, int bet, bool flag);
-    // 其他-----------------------------------------------------------------
-    void showAnimation(); // 显示特效动画
+
+    // 出牌阶段
+    void onDisposePlayHand(Player* player, Cards& cards);   // 处理玩家player打出的牌cards
+    void hidePlayerDropCards(Player* player);               // 隐藏玩家打出的牌
+    void onCardSelected(Qt::MouseButton button);            // 处理: 选中卡牌窗口
+    void onUserPlayHand();                                  // 处理: 非机器人玩家出牌
+    void onUserPass();                                      // 处理: 非机器人玩家放弃出牌
+
+    // 显示-----------------------------------------------------------------
+    void showAnimation(AnimationType type, int bet = 0); // 显示特效动画
+    QPixmap loadRoleImage(Player::Sex sex, Player::Direction direct, Player::Role role); // 加载玩家头像
 protected:
-    void paintEvent(QPaintEvent* pe);
+    void paintEvent(QPaintEvent* pe);     // 窗口重绘事件
+    void mouseMoveEvent(QMouseEvent* me); // 鼠标移动事件
 private:
     enum CardAlign { Horizontal, Vertical };
     struct PlayerContext {  // 玩家在窗口中的上下文环境
@@ -58,20 +71,33 @@ private:
         Cards lastCards;    // 7. 玩家刚打出的牌
     };
 
-    Ui::GamePanel *ui;
-    QPixmap _bkImage;                //  背景图片
-    GameControl* _gameControl;       // 游戏控制类的对象
-    QVector<Player*> _playerList;    // 三个玩家的实例化对象, 存储顺序: 左侧机器人、右侧机器人、用户玩家
-    QMap<Card, CardPanel*> _cardMap; // <单张卡牌, 单张卡牌对应的窗口>
-    QSize _cardSize;                 // 单张扑克牌的大小
-    QPixmap _cardBackImage;          // 单张卡牌的背面图
+    // 玩家----------------------------------------
+    QVector<Player*> _playerList;             // 三个玩家的实例化对象, 存储顺序: 左侧机器人、右侧机器人、用户玩家
     QMap<Player*, PlayerContext> _contextMap; // <玩家, 玩家在窗口中的上下文环境>
-    CardPanel* _baseCard; // 发牌区的扑克牌
-    CardPanel* _moveCard; // 发牌过程中移动的扑克牌
-    QVector<CardPanel*> _last3Card; // 最后三张底牌
-    QPoint _baseCardPos;  // 发牌区扑克牌的位置
+    QSet<CardPanel*> _selectCards;            // [当前用户选择要打出的牌]的卡牌窗口的集合
+
+    // 卡牌----------------------------------------
+    QMap<Card, CardPanel*> _cardMap;     // <单张卡牌, 单张卡牌对应的窗口>
+    QSize _cardSize;                     // 单张扑克牌的大小
+    QPixmap _cardBackImage;              // 单张卡牌的背面图
+    QRect _cardsRect;                    // 非机器人玩家剩余手牌的显示区域
+    QHash<CardPanel*, QRect> _userCards; // 记录非机器人玩家手牌的卡牌窗口在游戏主窗口中的位置
+
+    // 游戏流程-------------------------------------
+    GameControl* _gameControl;           // 游戏控制类的对象
+    CardPanel* _curSelCard;              // 当前被选中的牌: 鼠标框选[要打出的牌]的过程中
     GameControl::GameStatus _gameStatus; // 游戏的状态: 发牌、抢地主、出牌
-    QTimer* _timer; // 定时器
+
+    // 发牌阶段-------------------------------------
+    QTimer* _timer;                 // 发牌定时器
+    CardPanel* _baseCard;           // 发牌区的底牌
+    CardPanel* _moveCard;           // 发牌过程中移动的扑克牌
+    QVector<CardPanel*> _last3Card; // 最后三张底牌
+    QPoint _baseCardPos;            // 发牌区扑克牌的位置
+
+    // 资源----------------------------------------
+    Ui::GamePanel *ui;
+    QPixmap _bkImage;            //  背景图片
     AnimationWindow* _animation; // 特效动画窗口: 1分/2分/炸弹/王炸/飞机/...
 };
 #endif // GAMEPANEL_H

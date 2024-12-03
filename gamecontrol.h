@@ -51,38 +51,48 @@ public:
     Player* getPendPlayer(); // 出牌玩家
     Cards getPendCards();    // 打出的牌
 
+    // 发牌---------------------
     Card takeOneCard();      // 每次发一张牌
     Cards getSurplusCards(); // 得到最后3张底牌
 
-    void startLordCard();            // 准备叫地主
-    int getPlayerMaxBet();           // 得到玩家下注的最高分数
-    void becomeLord(Player* player); // 成为地主
+    // 抢地主-------------------
+    void startLordCard();                     // 准备叫地主
+    int getPlayerMaxBet();                    // 得到玩家下注的最高分数
+    void becomeLord(Player* player, int bet); // 成为地主
 
+    // 清数据-------------------
     void resetCardData();    // 重置卡牌数据
     void clearPlayerScore(); // 清空所有玩家的得分
 
     // 槽函数------------------------------------------------
-    void onGrabBet(Player* player, int bet); // 处理叫地主
-    // 处理出牌
+    void onGrabBet(Player* player, int bet);       // 处理叫地主
+    void onPlayHand(Player* player, Cards& cards); // 处理出牌
 signals:
-    // 通知主窗口玩家的状态发生了变化
-    // 因为机器人玩家需要知道自己的状态，才能知道自己应该执行哪段代码
+    // 通知主窗口: 玩家的状态发生了变化 ( 因为机器人玩家需要知道自己的状态，才能知道自己应该执行哪段代码 )
     void playerStatusChanged(Player* player, PlayerStatus status);
-    // 通知主窗口, 玩家player已经下注bet分抢地主了, ∴要更新提示信息了
+
+    // 通知主窗口: 玩家player已经下注bet分抢地主了, ∴要更新提示信息了
     void notifyGrabLordBet(Player* player, int bet, bool flag);
-    void gameStatusChanged(GameStatus status); // 通知主窗口, 游戏状态发生了变化
+
+    void gameStatusChanged(GameStatus status);         // 通知主窗口: 游戏状态发生了变化
+    void notifyPlayHand(Player* player, Cards& cards); // 通知主窗口: 玩家player打出了牌cards
+    void pendingInfo(Player* player, const Cards& crads); // 通知玩家: 给玩家传递出牌数据
 private:
     Cards _allCards;     // 整副牌
-    // 1. 3名玩家
+
+    // 3名玩家-------------------------------
     Robot* _robotLeft;   // 用户左边的机器人
     Robot* _robotRight;  // 用户右边的机器人
     User* _user;         // 用户玩家
-    // 2. 游戏流程
+
+    // 游戏流程------------------------------
     Player* _currPlayer; // 当前玩家
     Player* _pendPlayer; // 待处理牌的所属玩家
     Cards _pendCards;    // 待处理的牌
-    // 3. 对局信息
+
+    // 对局信息------------------------------
     BetRecord _betRecord; // 记录[下注分数最高的玩家]的下注信息
+    int _curBet;          // 这局游戏的下注分数
 };
 
 #endif // GAMECONTROL_H

@@ -1,6 +1,8 @@
 #include "robot.h"
 #include "strategy.h"
 #include "robotgraplord.h"
+#include "robotplayhand.h"
+#include "QDebug"
 
 Robot::Robot(QObject *parent): Player{parent} {
     _type = Player::Robot;
@@ -12,7 +14,8 @@ void Robot::prepareCallLord() {
 }
 
 void Robot::preparePlayHand() {
-
+    RobotPlayHand* subThread = new RobotPlayHand(this);
+    subThread->start();
 }
 
 void Robot::thinkCallLord() {
@@ -26,13 +29,17 @@ void Robot::thinkCallLord() {
     int weight = 0; // 记录手牌的权重
     Strategy strategy(this, _cards); // 创建基于 [ 当前机器人玩家的手牌 ] 的策略类
     // 1. 记录手牌中大小王的权重
-    weight += strategy.getRangeCards(Card::Card_SJ, Card::Card_BJ).cardCount() * 6;
+    weight += strategy.getRangeCards(Card::Card_SJ, Card::Card_End).cardCount() * 6;
+
     // 2. 记录手牌中顺子的权重
+    // pickOptimalSeqSingle()有问题!!!!!
     QVector<Cards> optSeqSingle = strategy.pickOptimalSeqSingle(); // 获取手牌的[所有可能的顺子集合]中最优的顺子集合
     weight += optSeqSingle.size() * 5;
+
     // 3. 记录手牌中炸弹的权重
     QVector<Cards> bombs = strategy.findCardsByCount(4);
     weight += bombs.size() * 5;
+
     // 4. 记录手牌中[点数为2的牌]的权重
     weight += _cards.pointCount(Card::Card_2) * 3;
 
@@ -66,4 +73,9 @@ void Robot::thinkCallLord() {
 }
 
 void Robot::thinkPlayHand() {
+    Strategy st(this, _cards);       // 基于当前玩家及其手牌创建的策略类对象
+    qDebug() << _name << "调用了run() -> thinkPlayHand() -> Strategy::makeStrategy()";
+    Cards cards = st.makeStrategy(); // 得到要出的牌
+    qDebug() << _name << "调用run() -> thinkPlayHand() -> Strategy::makeStrategy()成功";
+    playHand(cards);                 // 当前玩家打出cards
 }

@@ -10,15 +10,24 @@ Cards Strategy::makeStrategy() {
     // 得到上次出牌的玩家以及他打出的牌
     Player* pendPlayer = _player->getPendPlayer();
     Cards pendCards = _player->getPendCards();
+    if(pendPlayer == nullptr) {
+        qDebug() << _player->getName() << "在makeStrategy()中获得的pendPlayer: NULL";
+    }
+    else {
+        qDebug() << _player->getName() << "在makeStrategy()中获得的pendPlayer:" << pendPlayer->getName();
+    }
     // 判断上次出牌的玩家是不是自己
     if(pendPlayer == _player || pendPlayer == nullptr) {
         // 上次出牌的玩家(是我自己/为空): 直接出牌
+        qDebug() << _player->getName() << "在makeStrategy()中调用了firstPlay()";
         return firstPlay();
     }
     else { // 上次出牌的玩家不是自己，需要找出比上次出牌玩家点数大的牌
         PlayHand pendType(pendCards);
+        qDebug() << _player->getName() << "在makeStrategy()中调用了getGreaterCards()";
         Cards beatCards = getGreaterCards(pendType); // 获取点数大于上次出牌玩家的牌
         // 找到了点数更大的牌, 需要考虑是否出牌
+        qDebug() << _player->getName() << "在makeStrategy()中调用了whetherToBeat()";
         bool shouldBeat = whetherToBeat(beatCards);  // 判断是否要打出beatCards
         if(shouldBeat) { return beatCards; }         // 选择打出beatCards
         else { return Cards(); }                     // 选择不打出beatCards, 则返回空对象
@@ -307,7 +316,7 @@ QVector<Cards> Strategy::findCardsByCount(int count) {
 
 Cards Strategy::getRangeCards(Card::CardPoint begin, Card::CardPoint end) {
     Cards rangeCards;
-    for(Card::CardPoint point = begin; point <= end; point = (Card::CardPoint)(point + 1)) {
+    for(Card::CardPoint point = begin; point < end; point = (Card::CardPoint)(point + 1)) {
         int count = _cards.pointCount(point);
         Cards cs = findSamePointCards(point, count);
         rangeCards << cs;
@@ -401,7 +410,7 @@ QVector<Cards> Strategy::pickOptimalSeqSingle() {
     save.remove(findCardsByCount(4)); // 剔除炸弹, 防止在_cards中获取的顺子集合会拆开炸弹，导致因小失大
     save.remove(findCardsByCount(3)); // 剔除三带系列, 防止在_cards中获取的顺子集合会拆开三带系列，导致因小失大
     pickSeqSingles(allSeqRecord, seqSingles, save);
-    if(allSeqRecord.isEmpty()) { // 玩家的[_cards -炸弹 - 三张]中一个顺子也没有
+    if(allSeqRecord.isEmpty() || (allSeqRecord.size() == 1 && allSeqRecord.first().isEmpty())) { // 玩家的[_cards -炸弹 - 三张]中一个顺子也没有
         return QVector<Cards>();
     }
     QMap<int, int> seqMarks; // <arrSeqRecord[i]的索引i, allSeqRecord[i]的mark值>
@@ -419,13 +428,13 @@ QVector<Cards> Strategy::pickOptimalSeqSingle() {
         // 找点数相对较大一点的顺子(该算法只是适于普遍情况)
         int mark = 0;
         for(int j = 0; j < cardList.size(); ++j) {
-            mark += cardList[i].point() + 15; // 每张牌+15，是因为要让(单3+单4>单K)
+            mark += cardList[j].point() + 15; // 每张牌+15，是因为要让(单3+单4>单K)
         }
         seqMarks.insert(i, mark);
     }
     // 遍历seqMarks, 找出最小mark对应的索引值i
     int value = 0;      // 记录最小mark对应的索引
-    int comMark = 3000; // 记录最小mark
+    int comMark = 1000; // 记录最小mark
     auto it = seqMarks.constBegin();
     for(; it != seqMarks.end(); ++it) {
         if(it.value() < comMark) {

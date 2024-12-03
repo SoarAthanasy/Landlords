@@ -44,14 +44,14 @@ public:
     Player* getPrevPlayer() const;
     Player* getNextPlayer() const;
     // 待处理的牌及其所属玩家
-    void setPendingInfo(Player* player, Cards& cards);
+    void setPendingInfo(Player* player, const Cards& cards);
     Player* getPendPlayer();
     Cards getPendCards();
 
     // 手牌-------------------------------------------------------
     // 存储发来的扑克牌(发牌的时候得到的)。dispatch-发送
-    void storeDispatchCard(Card& card);
-    void storeDispatchCards(Cards& cards); // 地主会得到最后的3张牌
+    void storeDispatchCard(Card& card);    // 存储单张
+    void storeDispatchCards(Cards& cards); // 存储多张: 地主会得到最后的3张牌
     Cards getCards();            // 得到玩家手中所有的牌(用于显示)
     void clearCards();           // 清空玩家手中所有的牌(游戏结束时调用)
     void playHand(Cards& cards); // 出牌
@@ -65,7 +65,9 @@ public:
     virtual void thinkCallLord();   // 思考叫地主
     virtual void thinkPlayHand();   // 思考出牌
 signals:
-    void notifyGrabLordBet(Player* player, int bet); // 通知GameControl: 已经下注抢地主
+    void notifyGrabLordBet(Player* player, int bet);    // 通知GameControl: 已经下注抢地主
+    void notifyPlayHand(Player* player, Cards& cards);  // 通知GameControl: 玩家player打出了牌cards
+    void notifyPickCards(Player* player, Cards& cards); // 通知GamePanel: 玩家player已经得到了组合牌cards
 protected:
     int _score;    // 玩家的分数
     QString _name; // 玩家的姓名

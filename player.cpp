@@ -37,15 +37,27 @@ void Player::grabLordBet(int bet) {
     emit notifyGrabLordBet(this, bet);
 }
 
-void Player::storeDispatchCard(Card& card) { _cards.add(card); }
-void Player::storeDispatchCards(Cards& cards) { _cards.add(cards); }
+void Player::storeDispatchCard(Card& card) {
+    _cards.add(card);
+    Cards cards;
+    cards.add(card);
+    emit notifyPickCards(this, cards); // 通知GamePanel: 玩家player已经得到了分发的牌card
+}
+
+void Player::storeDispatchCards(Cards& cards) {
+    _cards.add(cards);
+    emit notifyPickCards(this, cards); // 通知GamePanel: 地主player已经得到了3张底牌
+}
 
 Cards Player::getCards() { return _cards; }
 void Player::clearCards() { _cards.clear(); }
 
-void Player::playHand(Cards& cards) { _cards.remove(cards); }
+void Player::playHand(Cards& cards) {
+    _cards.remove(cards);
+    emit notifyPlayHand(this, cards);
+}
 
-void Player::setPendingInfo(Player *player, Cards &cards) {
+void Player::setPendingInfo(Player *player, const Cards &cards) {
     _pendPlayer = player;
     _pendCards = cards;
 }

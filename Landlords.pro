@@ -14,6 +14,7 @@ SOURCES += \
     card.cpp \
     cardpanel.cpp \
     cards.cpp \
+    endingpanel.cpp \
     gamecontrol.cpp \
     main.cpp \
     gamepanel.cpp \
@@ -22,6 +23,7 @@ SOURCES += \
     playhand.cpp \
     robot.cpp \
     robotgraplord.cpp \
+    robotplayhand.cpp \
     scorepanel.cpp \
     strategy.cpp \
     user.cpp
@@ -32,6 +34,7 @@ HEADERS += \
     card.h \
     cardpanel.h \
     cards.h \
+    endingpanel.h \
     gamecontrol.h \
     gamepanel.h \
     mybutton.h \
@@ -39,6 +42,7 @@ HEADERS += \
     playhand.h \
     robot.h \
     robotgraplord.h \
+    robotplayhand.h \
     scorepanel.h \
     strategy.h \
     user.h

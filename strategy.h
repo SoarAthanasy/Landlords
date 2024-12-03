@@ -5,6 +5,7 @@
 #include "cards.h"
 #include "playhand.h"
 #include <QMap>
+#include <QDebug>
 
 class Strategy {
 public:
