@@ -3,6 +3,8 @@
 #include "playhand.h"
 #include <QRandomGenerator>
 #include <QMouseEvent>
+#include "endingpanel.h"
+#include <QPropertyAnimation>
 
 GamePanel::GamePanel(QWidget *parent): QMainWindow(parent), ui(new Ui::GamePanel) {
     ui->setupUi(this);
@@ -25,6 +27,8 @@ GamePanel::GamePanel(QWidget *parent): QMainWindow(parent), ui(new Ui::GamePanel
     initPlayerContext();
     // 8. 扑克牌场景初始化
     initGameScene();
+    // 9. 初始化出牌倒计时窗口
+    initCountDown();
 
     _timer = new QTimer(this); // 实例化定时器
     connect(_timer, &QTimer::timeout, this, &GamePanel::onDispatchCard);
@@ -268,6 +272,7 @@ void GamePanel::onPlayerStatucChanged(Player *player, GameControl::PlayerStatus 
         updatePlayerScore();
         // 本局获胜的玩家，可在下局游戏中优先抢地主
         _gameControl->setCurrPlayer(player);
+        showEndingScorePanel(); // 游戏结束时，显示分数面板窗口
         break;
     }
     default:
@@ -566,6 +571,7 @@ void GamePanel::onUserPlayHand() {
     }
     // 执行到此处, 则[要打出的牌]大于[待处理的牌]
 
+    _countDown->stopCountDown(); // 停止出牌倒计时
     // 让玩家对象出牌
     _gameControl->getUser()->playHand(playCards);
     // 打出牌后，清空[存储要打出的牌的容器]
@@ -573,6 +579,8 @@ void GamePanel::onUserPlayHand() {
 }
 
 void GamePanel::onUserPass() {
+    _countDown->stopCountDown(); // 停止出牌倒计时
+
     // 判断是不是用户玩家
     Player* curPlayer = _gameControl->getCurrPlayer();
     Player* userPlayer = _gameControl->getUser();
@@ -598,15 +606,34 @@ void GamePanel::onUserPass() {
 void GamePanel::showAnimation(AnimationType type, int bet) {
     switch(type) {
     case AnimationType::LianDui:
-        break;
     case AnimationType::ShunZi:
+    {
+        _animation->setFixedSize(250, 150);
+        _animation->move((width() - _animation->width()) / 2, 200);
+        _animation->showSequence((AnimationWindow::SeqType)type);
         break;
+    }
     case AnimationType::Plane:
+    {
+        _animation->setFixedSize(800, 75);
+        _animation->move((width() - _animation->width()) / 2, 200);
+        _animation->showPlane();
         break;
+    }
     case AnimationType::Bomb:
+    {
+        _animation->setFixedSize(180, 200);
+        _animation->move((width() - _animation->width()) / 2, (height() - _animation->height()) / 2 - 70);
+        _animation->showBomb();
         break;
+    }
     case AnimationType::JokerBomb:
+    {
+        _animation->setFixedSize(250, 200);
+        _animation->move((width() - _animation->width()) / 2, (height() - _animation->height()) / 2 - 70);
+        _animation->showJokerBomb();
         break;
+    }
     case AnimationType::Bet:
     {
         _animation->setFixedSize(160, 98);
@@ -651,6 +678,51 @@ QPixmap GamePanel::loadRoleImage(Player::Sex sex, Player::Direction direct, Play
         pixmap = QPixmap::fromImage(image);
     }
     return pixmap;
+}
+
+void GamePanel::showEndingScorePanel() {
+    bool isLord = (_gameControl->getUser()->getRole() == Player::Lord) ? true : false;
+    bool isWin = _gameControl->getUser()->isWin();
+    EndingPanel* panel = new EndingPanel(isLord, isWin, this);
+    panel->show();
+    // panel->move((width() - panel->width()) / 2, (height() - panel->height()) / 2);
+    panel->setPlayerScore(_gameControl->getLeftRobot()->getScore(),  // 设置分数面板上个玩家的分数
+                          _gameControl->getRightRobot()->getScore(),
+                          _gameControl->getUser()->getScore());
+    QPropertyAnimation* animation = new QPropertyAnimation(panel, "geometry", this); // 创建分数面板的属性动画对象
+    animation->setDuration(2500); // 动画持续的时间: 2.5s
+    // 设置窗口的起始位置和终止位置
+    animation->setStartValue(QRect(panel->x(), panel->y(), panel->width(), panel->height()));
+    animation->setEndValue(QRect((width() - panel->width()) / 2, (height() - panel->height()) / 2,
+                                 panel->width(), panel->height()));
+    // 设置窗口的运动曲线
+    animation->setEasingCurve(QEasingCurve(QEasingCurve::OutBounce));
+    // 播放动画
+    animation->start();
+    // 处理按钮的信号
+    connect(panel, &EndingPanel::continueGame, this, [=](){
+        panel->close();
+        panel->deleteLater();
+        animation->deleteLater();
+        ui->btnGroup->selectPage(ButtonGroup::Empty); // 按钮组显示空界面
+        gameStatusPrecess(GameControl::Dispatch);     // 将游戏状态设置为发牌状态
+    });
+}
+
+void GamePanel::initCountDown() {
+    _countDown = new CountDown(this);
+    _countDown->move((width() - _countDown->width()) / 2, (height() - _countDown->height()) / 2 + 30);
+    connect(_countDown, &CountDown::notMuchTime, this, [=](){
+        // 没有多少的时间用于思考出牌了, 现在要播放提示音乐
+    });
+    // 倒计时结束, 用户被剥夺出牌权
+    connect(_countDown, &CountDown::timeout, this, &GamePanel::onUserPass);
+    User* user = _gameControl->getUser();
+    connect(user, &User::startCountDown, this, [=](){
+        if(_gameControl->getPendPlayer() != user && _gameControl->getPendPlayer() != nullptr) {
+            _countDown->showCountDown();
+        }
+    });
 }
 
 void GamePanel::paintEvent(QPaintEvent *pe) {

@@ -11,6 +11,8 @@ public:
     explicit User(QObject *parent = nullptr);
     void prepareCallLord() override;
     void preparePlayHand() override;
+signals:
+    void startCountDown(); // 通知主窗口: 开始用户玩家的出牌倒计时
 };
 
 #endif // USER_H

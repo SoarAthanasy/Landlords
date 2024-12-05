@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QTimer>
 #include "animationwindow.h"
+#include "countdown.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class GamePanel; }
@@ -56,6 +57,8 @@ public:
     // 显示-----------------------------------------------------------------
     void showAnimation(AnimationType type, int bet = 0); // 显示特效动画
     QPixmap loadRoleImage(Player::Sex sex, Player::Direction direct, Player::Role role); // 加载玩家头像
+    void showEndingScorePanel(); // 游戏结束时, 显示分数面板
+    void initCountDown();        // 初始化倒计时窗口
 protected:
     void paintEvent(QPaintEvent* pe);     // 窗口重绘事件
     void mouseMoveEvent(QMouseEvent* me); // 鼠标移动事件
@@ -87,6 +90,7 @@ private:
     GameControl* _gameControl;           // 游戏控制类的对象
     CardPanel* _curSelCard;              // 当前被选中的牌: 鼠标框选[要打出的牌]的过程中
     GameControl::GameStatus _gameStatus; // 游戏的状态: 发牌、抢地主、出牌
+    CountDown* _countDown;               // 用户玩家出牌时的倒计时窗口
 
     // 发牌阶段-------------------------------------
     QTimer* _timer;                 // 发牌定时器

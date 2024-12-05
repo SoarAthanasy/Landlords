@@ -9,5 +9,5 @@ void User::prepareCallLord() {
 }
 
 void User::preparePlayHand() {
-
+    emit startCountDown(); // 开始出牌倒计时
 }
