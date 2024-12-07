@@ -10,6 +10,7 @@
 #include <QTimer>
 #include "animationwindow.h"
 #include "countdown.h"
+#include "bgmcontrol.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class GamePanel; }
@@ -91,6 +92,7 @@ private:
     CardPanel* _curSelCard;              // 当前被选中的牌: 鼠标框选[要打出的牌]的过程中
     GameControl::GameStatus _gameStatus; // 游戏的状态: 发牌、抢地主、出牌
     CountDown* _countDown;               // 用户玩家出牌时的倒计时窗口
+    BGMControl* _bgm;
 
     // 发牌阶段-------------------------------------
     QTimer* _timer;                 // 发牌定时器

@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     animationwindow.cpp \
+    bgmcontrol.cpp \
     buttongroup.cpp \
     card.cpp \
     cardpanel.cpp \
@@ -17,8 +18,10 @@ SOURCES += \
     countdown.cpp \
     endingpanel.cpp \
     gamecontrol.cpp \
+    loading.cpp \
     main.cpp \
     gamepanel.cpp \
+    mediaplaylist.cpp \
     mybutton.cpp \
     player.cpp \
     playhand.cpp \
@@ -31,6 +34,7 @@ SOURCES += \
 
 HEADERS += \
     animationwindow.h \
+    bgmcontrol.h \
     buttongroup.h \
     card.h \
     cardpanel.h \
@@ -39,6 +43,8 @@ HEADERS += \
     endingpanel.h \
     gamecontrol.h \
     gamepanel.h \
+    loading.h \
+    mediaplaylist.h \
     mybutton.h \
     player.h \
     playhand.h \
@@ -61,3 +67,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     res.qrc
+
+RC_ICONS = images/logo.ico

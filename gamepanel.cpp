@@ -34,6 +34,7 @@ GamePanel::GamePanel(QWidget *parent): QMainWindow(parent), ui(new Ui::GamePanel
     connect(_timer, &QTimer::timeout, this, &GamePanel::onDispatchCard);
 
     _animation = new AnimationWindow(this);
+    _bgm = new BGMControl(this);
 }
 
 GamePanel::~GamePanel() { delete ui; }
@@ -111,6 +112,8 @@ void GamePanel::initButtonGroup() {
         updatePlayerScore();
         // 修改游戏状态 → 发牌
         gameStatusPrecess(GameControl::Dispatch);
+        // 播放背景音乐
+        _bgm->startBGM(80);
     });
     connect(ui->btnGroup, &ButtonGroup::playHand, this, &GamePanel::onUserPlayHand);
     connect(ui->btnGroup, &ButtonGroup::pass, this, &GamePanel::onUserPass);
@@ -263,7 +266,10 @@ void GamePanel::onPlayerStatucChanged(Player *player, GameControl::PlayerStatus 
         break;
     }
     case GameControl::Winning:
-    {   // 显示左右机器人玩家的扑克牌
+    {
+        // 背景音乐停止播放
+        _bgm->stopBGM();
+        // 显示左右机器人玩家的扑克牌
         _contextMap[_gameControl->getLeftRobot()].isFrontSide = true;
         _contextMap[_gameControl->getRightRobot()].isFrontSide = true;
         updatePlayerCards(_gameControl->getLeftRobot());
@@ -308,6 +314,7 @@ void GamePanel::startDispatchCard() { // 开始发牌
     // 启动定时器 → 开始发牌
     _timer->start(10); // 每隔10ms，定时器就会触发1次
     // 播放背景音乐
+    _bgm->playAssintMusic(BGMControl::Dispatch);
 }
 
 void GamePanel::onDispatchCard() { // 发牌启动的定时器的处理动作
@@ -329,6 +336,8 @@ void GamePanel::onDispatchCard() { // 发牌启动的定时器的处理动作
         if(_gameControl->getSurplusCards().cardCount() == 3) {
             _timer->stop(); // 终止定时器
             gameStatusPrecess(GameControl::CallingLord); // 切换游戏状态
+            // 终止发牌音乐的播放
+            _bgm->stopAssintMusic();
             return; // 发牌结束
         }
     }
@@ -452,17 +461,20 @@ void GamePanel::onGrabLordBet(Player *player, int bet, bool flag) {
         else { // 第2,3次抢地主
             context.info->setPixmap(QPixmap(":/images/qiangdizhu.png"));
         }
+        // 显示抢地主的分数
+        showAnimation(Bet, bet);
     }
     context.info->show();
-    // 显示抢地主的分数
-    showAnimation(Bet, bet);
+
     // 播放分数的背景音乐
+    _bgm->playerRobLordMusic(bet, (BGMControl::RoleSex)player->getSex(), flag);
 }
 
 void GamePanel::onDisposePlayHand(Player *player, Cards &cards) {
     // 1. 存储玩家打出的牌
     auto it = _contextMap.find(player);
     it->lastCards = cards;
+
     // 2. 根据牌型播放游戏特效
     PlayHand hand(cards);
     PlayHand::HandType type = hand.getHandType();
@@ -487,10 +499,28 @@ void GamePanel::onDisposePlayHand(Player *player, Cards &cards) {
     if(cards.isEmpty()) {
         it->info->setPixmap(QPixmap(":/images/pass.png"));
         it->info->show();
+        _bgm->playPassMusic((BGMControl::RoleSex)player->getSex());
     }
+    else {
+        if(_gameControl->getPendPlayer() == player || _gameControl->getPendPlayer() == nullptr) { // 是第一个出牌
+            _bgm->playCardMusic(cards, true, (BGMControl::RoleSex)player->getSex());
+        }
+        else { // 不是第一个出牌
+            _bgm->playCardMusic(cards, false, (BGMControl::RoleSex)player->getSex());
+        }
+    }
+
     // 3. 更新玩家剩余的牌
     updatePlayerCards(player);
+
     // 4. 播放提示音效
+    // 判断玩家剩余的牌的数量
+    if(player->getCards().cardCount() == 2) {
+        _bgm->playLastMusic(BGMControl::Last2, (BGMControl::RoleSex)player->getSex());
+    }
+    else if(player->getCards().cardCount() == 1) {
+        _bgm->playLastMusic(BGMControl::Last1, (BGMControl::RoleSex)player->getSex());
+    }
 }
 
 void GamePanel::hidePlayerDropCards(Player *player) {
@@ -536,6 +566,7 @@ void GamePanel::onCardSelected(Qt::MouseButton button) {
         else { // 当前选中的卡牌窗口已存在_selectCards中: 则添加
             _selectCards.erase(it);
         }
+        _bgm->playAssintMusic(BGMControl::SelectCard);
     }
     else if(button == Qt::RightButton) { // 鼠标右键点击卡牌窗口 → 调用出牌按钮的槽函数
         onUserPlayHand();
@@ -689,6 +720,9 @@ void GamePanel::showEndingScorePanel() {
     panel->setPlayerScore(_gameControl->getLeftRobot()->getScore(),  // 设置分数面板上个玩家的分数
                           _gameControl->getRightRobot()->getScore(),
                           _gameControl->getUser()->getScore());
+
+    _bgm->playEndingMusic(isWin);
+
     QPropertyAnimation* animation = new QPropertyAnimation(panel, "geometry", this); // 创建分数面板的属性动画对象
     animation->setDuration(2500); // 动画持续的时间: 2.5s
     // 设置窗口的起始位置和终止位置
@@ -706,6 +740,7 @@ void GamePanel::showEndingScorePanel() {
         animation->deleteLater();
         ui->btnGroup->selectPage(ButtonGroup::Empty); // 按钮组显示空界面
         gameStatusPrecess(GameControl::Dispatch);     // 将游戏状态设置为发牌状态
+        _bgm->startBGM(80);
     });
 }
 
@@ -714,6 +749,7 @@ void GamePanel::initCountDown() {
     _countDown->move((width() - _countDown->width()) / 2, (height() - _countDown->height()) / 2 + 30);
     connect(_countDown, &CountDown::notMuchTime, this, [=](){
         // 没有多少的时间用于思考出牌了, 现在要播放提示音乐
+        _bgm->playAssintMusic(BGMControl::Alert);
     });
     // 倒计时结束, 用户被剥夺出牌权
     connect(_countDown, &CountDown::timeout, this, &GamePanel::onUserPass);

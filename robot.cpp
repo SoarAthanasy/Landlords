@@ -10,11 +10,19 @@ Robot::Robot(QObject *parent): Player{parent} {
 
 void Robot::prepareCallLord() {
     RobotGrapLord* subThread = new RobotGrapLord(this);
+    connect(subThread, &RobotGrapLord::finished, this, [=](){
+        qDebug() << "RobotGrapLord子线程对象析构..., Robot name:" << this->getName();
+        subThread->deleteLater();
+    });
     subThread->start();
 }
 
 void Robot::preparePlayHand() {
     RobotPlayHand* subThread = new RobotPlayHand(this);
+    connect(subThread, &RobotGrapLord::finished, this, [=](){
+        qDebug() << "RobotPlayHand子线程对象析构..., Robot name:" << this->getName();
+        subThread->deleteLater();
+    });
     subThread->start();
 }
 

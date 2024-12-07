@@ -194,7 +194,7 @@ Cards Strategy::firstPlay() {
 Cards Strategy::getGreaterCards(PlayHand type) {
     // 1. 上次出牌玩家和当前玩家是不是一伙的
     Player* pendPlayer = _player->getPendPlayer();
-    if(pendPlayer->getRole() != _player->getRole() && pendPlayer->getCards().cardCount() <= 4) {
+    if(pendPlayer != nullptr && pendPlayer->getRole() != _player->getRole() && pendPlayer->getCards().cardCount() <= 4) {
         // 上次出牌玩家和当前玩家不是一伙的，且上次出牌玩家的手牌数≤4
         QVector<Cards> bombs = findCardsByCount(4); // 获取_cards中的炸弹
         for(int i = 0; i < bombs.size(); ++i) {
