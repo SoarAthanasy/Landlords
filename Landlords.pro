@@ -68,3 +68,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES +=
 
 RC_ICONS = images/logo.ico # 设置可执行程序的图标
+
+DISTFILES += \
+    resource.rcc

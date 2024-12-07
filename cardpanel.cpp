@@ -1,11 +1,9 @@
 #include "cardpanel.h"
 #include <QMouseEvent>
 
-CardPanel::CardPanel(QWidget *parent): QWidget{parent} {
-    _isFront = true;
-}
+CardPanel::CardPanel(QWidget *parent): QWidget{parent} { }
 
-void CardPanel::setImage(QPixmap& front, QPixmap& back) {
+void CardPanel::setImage(const QPixmap& front, const QPixmap& back) {
     _front = front;
     _back = back;
     setFixedSize(_front.size()); // 卡牌窗口的大小固定等于正面图片的大小

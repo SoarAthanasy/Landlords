@@ -2,9 +2,7 @@
 
 Strategy::Strategy() {}
 
-Strategy::Strategy(Player *player, const Cards &cards) {
-    _player = player;  _cards = cards;
-}
+Strategy::Strategy(Player *player, const Cards &cards) : _player(player), _cards(cards) {}
 
 Cards Strategy::makeStrategy() {
     // 得到上次出牌的玩家以及他打出的牌
@@ -217,7 +215,7 @@ Cards Strategy::getGreaterCards(PlayHand type) {
     Cards remain = _cards; // 备份_cards, 用于获取剔除顺子后剩下的牌
     remain.remove(Strategy(_player, remain).pickOptimalSeqSingle());
 
-    auto getbeatCards = std::bind([=](Cards& cards){ // 定义可调用对象: 获取cards中所有大于待处理牌的组合牌
+    auto getbeatCards = std::bind([=](const Cards& cards){ // 定义可调用对象: 获取cards中所有大于待处理牌的组合牌
         QVector<Cards> beatCardsArray = Strategy(_player, cards).findCardType(type, true);
         if( !beatCardsArray.isEmpty() ) { // 若remain中有大于待处理牌的同牌型组合牌
             if(_player->getRole() != nextPlayer->getRole() && nextPlayer->getCards().cardCount() <= 2) {
@@ -378,7 +376,7 @@ QVector<Cards> Strategy::findCardType(PlayHand hand, bool beat) {
     }
 }
 
-void Strategy::pickSeqSingles(QVector<QVector<Cards>>& allSeqRecord, QVector<Cards>& seqSingle, Cards &cards) {
+void Strategy::pickSeqSingles(QVector<QVector<Cards>>& allSeqRecord, const QVector<Cards>& seqSingle, const Cards &cards) {
     // 1. 得到cards中所有顺子的集合
     QVector<Cards> allSeqSingles = Strategy(_player, cards)
                                        .findCardType(PlayHand(PlayHand::Hand_Seq_Single,Card::Card_Begin, 0), false);

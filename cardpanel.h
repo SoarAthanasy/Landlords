@@ -11,7 +11,7 @@ class CardPanel : public QWidget { // 单张卡牌窗口类
 public:
     explicit CardPanel(QWidget *parent = nullptr);
 
-    void setImage(QPixmap& front, QPixmap& back); // 设置卡牌的正面和背面的图片
+    void setImage(const QPixmap& front, const QPixmap& back); // 设置卡牌的正面和背面的图片
     QPixmap getImage(); // 获取卡牌的正面图片。为什么不获取背面?——背面都相同, 没有获取价值
 
     void setFrontSide(bool flag); // 设置是否显示正面
@@ -36,10 +36,10 @@ signals:
 private:
     QPixmap _front;   // 正面的图片
     QPixmap _back;    // 背面的图片
-    bool _isFront;    // 判断卡牌当前是否为正面
-    bool _isSelected; // 记录卡牌是否被选中
+    bool _isFront = true;    // 判断卡牌当前是否为正面
+    bool _isSelected = false; // 记录卡牌是否被选中
     Card _card;       // 对应的卡牌
-    Player* _owner;   // 卡牌的所有者
+    Player* _owner = nullptr;   // 卡牌的所有者
 };
 
 #endif // CARDPANEL_H

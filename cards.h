@@ -9,7 +9,7 @@
 class Cards { // 多张卡牌类
 public:
     Cards();
-    Cards(const Card& card);
+    explicit Cards(const Card& card);
     // 添加扑克牌
     void add(const Card& card);   // 添加1张
     void add(const Cards& cards); // 添加多张

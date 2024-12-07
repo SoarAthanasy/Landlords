@@ -81,18 +81,18 @@ private:
     Cards _allCards;     // 整副牌
 
     // 3名玩家-------------------------------
-    Robot* _robotLeft;   // 用户左边的机器人
-    Robot* _robotRight;  // 用户右边的机器人
-    User* _user;         // 用户玩家
+    Robot* _robotLeft = nullptr;   // 用户左边的机器人
+    Robot* _robotRight = nullptr;  // 用户右边的机器人
+    User* _user = nullptr;         // 用户玩家
 
     // 游戏流程------------------------------
-    Player* _currPlayer; // 当前玩家
-    Player* _pendPlayer; // 待处理牌的所属玩家
-    Cards _pendCards;    // 待处理的牌
+    Player* _currPlayer = nullptr; // 当前玩家
+    Player* _pendPlayer = nullptr; // 待处理牌的所属玩家
+    Cards _pendCards;              // 待处理的牌
 
     // 对局信息------------------------------
     BetRecord _betRecord; // 记录[下注分数最高的玩家]的下注信息
-    int _curBet;          // 这局游戏的下注分数
+    int _curBet = 0;      // 这局游戏的下注分数
 };
 
 #endif // GAMECONTROL_H

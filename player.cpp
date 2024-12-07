@@ -1,9 +1,6 @@
 #include "player.h"
 
-Player::Player(QObject* parent): QObject{parent} {
-    _score = 0;   _isWin = false;
-    _pendPlayer = nullptr;
-}
+Player::Player(QObject* parent): QObject{parent} {}
 Player::Player(QString name, QObject* parent) : Player(parent) { // Player(parent)是使用了委托构造函数
     _name = name;
 }

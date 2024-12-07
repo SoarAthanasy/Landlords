@@ -37,7 +37,7 @@ public:
 
     PlayHand();
     // 传递给类一组牌, 通过类分析出牌型, 点数, 以及相关的附属信息(如顺子: 记录牌的数量)
-    PlayHand(Cards& cards);
+    explicit PlayHand(Cards& cards);
     PlayHand(HandType type, Card::CardPoint point, int extra);
 
     // 得到组合牌的属性信息

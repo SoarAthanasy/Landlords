@@ -18,7 +18,7 @@ protected:
     void paintEvent(QPaintEvent* pe);
 private:
     QPixmap _image; // 显示图片
-    int _index;     // 显示炸弹所需的图片索引: 用于指明显示哪张图片
+    int _index = 0;     // 显示炸弹所需的图片索引: 用于指明显示哪张图片
     int _x = 0;         // 记录飞机当前水平方向的位置
 };
 

@@ -27,7 +27,7 @@ public:
     // 8. 找出_cards中所有与[所出牌hand的牌型_type]相同的组合牌，并通过beat指定要找的组合牌是否要大过指定的所出牌hand
     QVector<Cards> findCardType(PlayHand hand, bool beat);
     // 9. 从指定的Cards对象中挑选出满足条件的顺子
-    void pickSeqSingles(QVector<QVector<Cards>>& allSeqRecord, QVector<Cards>& seqSingle, Cards& cards);
+    void pickSeqSingles(QVector<QVector<Cards>>& allSeqRecord, const QVector<Cards>& seqSingle, const Cards& cards);
     // 10. 从[顺子集合的集合]中筛选出最优的顺子集合
     QVector<Cards> pickOptimalSeqSingle();
 private: // 私有成员函数

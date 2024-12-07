@@ -69,18 +69,18 @@ signals:
     void notifyPlayHand(Player* player, Cards& cards);  // 通知GameControl: 玩家player打出了牌cards
     void notifyPickCards(Player* player, Cards& cards); // 通知GamePanel: 玩家player已经得到了组合牌cards
 protected:
-    int _score;    // 玩家的分数
+    int _score = 0;    // 玩家的分数
     QString _name; // 玩家的姓名
     Role _role;    // 玩家的角色
     Sex _sex;      // 玩家的性别
     Direction _direction; // 玩家的头像显示方向
     Type _type;    // 玩家的类型
-    bool _isWin;   // 记录玩家是否赢了
-    Player* _prev; // 当前玩家的上家
-    Player* _next; // 当前玩家的下家
+    bool _isWin = false;   // 记录玩家是否赢了
+    Player* _prev = nullptr; // 当前玩家的上家
+    Player* _next = nullptr; // 当前玩家的下家
     Cards _cards;  // 玩家手中的牌
     Cards _pendCards;    // 待处理的牌
-    Player* _pendPlayer; // 待处理牌的所属玩家
+    Player* _pendPlayer = nullptr; // 待处理牌的所属玩家
 };
 
 #endif // PLAYER_H

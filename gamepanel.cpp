@@ -125,20 +125,20 @@ void GamePanel::initButtonGroup() {
 
 void GamePanel::initPlayerContext() {
     // 1. 放置玩家扑克牌的区域
-    QRect cardsRect[] = {
+    const QRect cardsRect[] = {
         // x, y, width, height
         QRect(90, 130, 100, height() - 200),                   // 左侧机器人
         QRect(rect().right() - 190, 130, 100, height() - 200), // 右侧机器人
         QRect(250, rect().bottom() - 120, width() - 500, 100)  // 当前玩家
     };
     // 2. 玩家出牌的区域
-    QRect playHandRect[] = {
+    const QRect playHandRect[] = {
         QRect(260, 150, 100, 100),                             // 左侧机器人
         QRect(rect().right() - 360, 150, 100, 100),            // 右侧机器人
         QRect(150, rect().bottom() - 290, width() - 300, 105)  // 当前玩家
     };
     // 3. 玩家头像显示的位置
-    QPoint roleImgPos[] = {
+    const QPoint roleImgPos[] = {
         QPoint(cardsRect[0].left() - 80, cardsRect[0].height() / 2 + 20),  // 左侧机器人
         QPoint(cardsRect[1].right() + 10, cardsRect[1].height() / 2 + 20), // 右侧机器人
         QPoint(cardsRect[2].right() - 10, cardsRect[2].top() - 10)         // 当前玩家
@@ -350,7 +350,7 @@ void GamePanel::cardMoveStep(Player* player, int curPos) {
     // 得到每个玩家扑克牌的展示区域
     QRect cardRect = _contextMap[player].cardRect;
     // 每个玩家的单元步长
-    int unit[] = {
+    const int unit[] = {
         (_baseCardPos.x() - cardRect.right()) / 100,
         (cardRect.left() - _baseCardPos.x()) / 100,
         (cardRect.top() - _baseCardPos.y()) / 100
@@ -546,7 +546,7 @@ void GamePanel::onCardSelected(Qt::MouseButton button) {
         return; // 若游戏状态不为出牌, 则不作任何处理
     }
     // 2. 判断发出信号的牌的所有者是不是当前用户玩家
-    CardPanel* panel = (CardPanel*)sender();
+    CardPanel* panel = static_cast<CardPanel*>(sender());
     if(panel->getOwner() != _gameControl->getUser()) {
         return;
     }
