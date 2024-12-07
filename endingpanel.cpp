@@ -47,6 +47,7 @@ void EndingPanel::setPlayerScore(int left, int right, int user) {
 }
 
 void EndingPanel::paintEvent(QPaintEvent *pe) {
+    Q_UNUSED(pe);
     QPainter p(this);
     p.drawPixmap(rect(), _backImage);
 }

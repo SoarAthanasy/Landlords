@@ -26,7 +26,7 @@ Player::Type Player::getType() const { return _type; }
 void Player::setScore(int score) { _score = score; }
 int Player::getScore() const { return _score; }
 
-void Player::setWin(bool flag) { _isWin = true; }
+void Player::setWin(bool flag) { _isWin = flag; }
 bool Player::isWin() const { return _isWin; }
 
 void Player::setPrevPlayer(Player* player) { _prev = player; }

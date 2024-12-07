@@ -36,6 +36,7 @@ void CountDown::stopCountDown() {
 }
 
 void CountDown::paintEvent(QPaintEvent *pe) {
+    Q_UNUSED(pe);
     QPainter p(this);
     p.drawPixmap(rect(), _clock);
     p.drawPixmap(24, 24, _number.width(), _number.height(), _number);

@@ -92,6 +92,7 @@ void AnimationWindow::showPlane() {
 }
 
 void AnimationWindow::paintEvent(QPaintEvent *pe) {
+    Q_UNUSED(pe);
     QPainter p(this);
     p.drawPixmap(_x, 0, _image.width(), _image.height(), _image);
 }

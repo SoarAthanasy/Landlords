@@ -65,7 +65,6 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-RESOURCES += \
-    res.qrc
+RESOURCES +=
 
-RC_ICONS = images/logo.ico
+RC_ICONS = images/logo.ico # 设置可执行程序的图标
